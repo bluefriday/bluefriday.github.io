@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>dockerfile best practice | 오늘처럼</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="" />
+    
+    <meta name="description" content="Dockerfile Best Practice도커 컨테이너를 만들기 위해 사용되는 도커 이미지는 Dockerfile 을 통해서 생성할 수 있다. 물론 commit 명령어를 이용하여 동적으로 컨테이너로부터 이미지를 생성할 수도 있지만, 이미지의 효율적인 관리를 위해서 commit을 사용하는 것보다는 Dockerfile 을 이용하여 이미지를 생성하는 것이 좋다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dockerfile best practice">
+<meta property="og:url" content="http://bluefriday.github.io/2020/11/19/dockerfile-best-practice/index.html">
+<meta property="og:site_name" content="오늘처럼">
+<meta property="og:description" content="Dockerfile Best Practice도커 컨테이너를 만들기 위해 사용되는 도커 이미지는 Dockerfile 을 통해서 생성할 수 있다. 물론 commit 명령어를 이용하여 동적으로 컨테이너로부터 이미지를 생성할 수도 있지만, 이미지의 효율적인 관리를 위해서 commit을 사용하는 것보다는 Dockerfile 을 이용하여 이미지를 생성하는 것이 좋다.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-19T00:38:28.000Z">
+<meta property="article:modified_time" content="2020-11-19T09:41:09.145Z">
+<meta property="article:author" content="Heechang Lee">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+    
+
+    
+        <link rel="alternate" href="/" title="오늘처럼" type="application/atom+xml" />
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">Home</a>
+                                </li>
+                            
+                                    
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" target="_blank" rel="noopener" href="http://bluefriday.kr">About</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    uncategorized
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-dockerfile-best-practice" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        dockerfile best practice
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/11/19/dockerfile-best-practice/" class="article-date">
+       <time datetime="2020-11-19T00:38:28.000Z" itemprop="datePublished">2020-11-19</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/11/19/dockerfile-best-practice/" class="article-date">
+     <time datetime="2020-11-19T09:41:09.145Z" itemprop="dateModified">2020-11-19</time>
+  </a>
+</div>
+
+
+                
+
+                
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h2 id="Dockerfile-Best-Practice"><a href="#Dockerfile-Best-Practice" class="headerlink" title="Dockerfile Best Practice"></a>Dockerfile Best Practice</h2><p>도커 컨테이너를 만들기 위해 사용되는 도커 이미지는 Dockerfile 을 통해서 생성할 수 있다. 물론 commit 명령어를 이용하여 동적으로 컨테이너로부터 이미지를 생성할 수도 있지만, 이미지의 효율적인 관리를 위해서 commit을 사용하는 것보다는 Dockerfile 을 이용하여 이미지를 생성하는 것이 좋다. 여기서는 Dockerfile을 작성할 때 유의해야 하는 사항들에 대하여 정리한다. (해당 내용은 <a target="_blank" rel="noopener" href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a> 의 링크를 참조하였습니다.)</p>
+<h4 id="설치-구성의-최소화"><a href="#설치-구성의-최소화" class="headerlink" title="설치 구성의 최소화"></a>설치 구성의 최소화</h4><p>컨테이너는 효율적인 리소스 사용 및 배포의 자동화를 위해, 사용량을 고려하여 손쉽게 scale in/out 될 수 있는 구조다. 따라서 해당 컨테이너가 필요에 따라 생성되거나 삭제될 수 있다는 점을 고려하여, 컨테이너에 필요 이상의 설정을 하지 않고 최소한의 설정/구성으로 구동할 것을 권장한다. 복잡성/의존성을 최소화하기 위하여 해당 이미지에서 구동되는 어플리케이션에 필요한 최소한의 library 만을 설치하는 것이 좋다. 또한 컨테이너가 삭제될 경우 컨테이너 내부의 데이터도 함께 삭제되기 때문에, 사용자에 의해 변경되거나 기록될 수 있는 데이터는 VOLUME 명령어를 이용하여 외부에 적재하는 것이 좋다. </p>
+<h4 id="‘-dockerignore’-파일의-활용"><a href="#‘-dockerignore’-파일의-활용" class="headerlink" title="‘.dockerignore’ 파일의 활용"></a>‘.dockerignore’ 파일의 활용</h4><p>빌드 작업을 수행할 때 docker engine은 build script 파일(Dockerfile)이 있는 경로와 모든 하위 경로의 파일/디렉토리를 임시 공간(Docker context)에 저장한 후 build 작업을 수행한다. 이 경우 docker build 에 직접적으로 사용되지 않더라도 해당 경로 하위에 있는 파일/디렉토리가 context에 포함될 수 있다. 이를 방지하기 위하여 .dockerignore 파일을 이용하여 빌드 시에 제외할 파일/디렉토리를 지정할 수 있다. 빌드 되는 컨테이너 이미지의 기능 차이는 없으나, 빌드 성능을 높이기 위하여 build 가 이루어지는 디렉토리에서 .dockerignore 파일을 생성하여 활용하는것을 권장한다. 물론 가장 좋은 방법은 빈 디렉토리를 생성한 후에 Dockerfile과 build에 반드시 필요한 파일/디렉토리만을 해당 디렉토리 내부에 위치하여 container 이미지를 생성하는 방법이다.</p>
+<h4 id="1-application-per-1-container"><a href="#1-application-per-1-container" class="headerlink" title="1 application per 1 container"></a>1 application per 1 container</h4><p>컨테이너 안에 2개 이상의 어플리케이션을 구동하는 것도 물론 가능하다. 예를 들어 web, was 어플리케이션을 하나의 컨테이너 안에서 구동되도록 할 수도 있다. 하지만 이렇게 1개의 컨테이너 안에 2개 이상의 어플리케이션을 구동하여 사용하는 것은, 컨테이너로 구동되어 있는 어플리케이션 간의 결합성을 높이고 확장성을 떨어트린다. 가령 앞의 경우 web 어플리케이션만 scaling이 되어도 충분한 상황에서 was까지 추가적으로 구동이 될 수 밖에 없다. 자원의 효율적인 확장을 위하여 1개의 컨테이너 안에 웹서버, 데이터베이스 등을 모두 설치하여 사용하는 방식을 지양해야 한다.</p>
+<h4 id="Dockerfile-스크립트-최소화"><a href="#Dockerfile-스크립트-최소화" class="headerlink" title="Dockerfile 스크립트 최소화"></a>Dockerfile 스크립트 최소화</h4><p>Docker 이미지의 구성 레이어 수는 Dockerfile 의 예약어 수에 비례한다. 가독성을 높이기 위하여 Dockerfile의 예약어를 여러 라인에 걸쳐 사용할 수 있지만, 레이어의 수가 증가하여 파일크기, 빌드시간 등이 늘어날 수 있으므로 가독성과 이미지 크기를 적절히 고려하여 Dockerfile 스크립트를 구성해야 한다.</p>
+<h4 id="Caching-기능-활용"><a href="#Caching-기능-활용" class="headerlink" title="Caching 기능 활용"></a>Caching 기능 활용</h4><p>빌드 시간을 단축하기 위하여 Docker build 엔진의 캐싱 기능을 활용할 수 있다. build engine은 한번 이상 빌드한 Dockerfile의 이미지를 Dockerfile 기준 스크립트 라인 단위로 캐싱 한다. 변경되지 않은 라인의 경우 기존의 캐싱 데이터를 이용하므로, 자주 변경될 수 있는 예약어의 경우 Dockerfile의 하단에 위치하는 것이 좋다. </p>
+<p>또한 이와는 반대로 캐싱 기능을 아예 사용하지 않을 경우도 있다. 이 경우에는 FROM 절 바로 밑의 하단에 ENV 변수로 CACHE_TEMP 등의 변수명을 지정해주고 빌드를 할 때, 이 변수의 값을 임의의 난수로 지정해주면 된다. 해당 변수는 컨테이너 이미지 안에서 사용되지 않고, 의미없는 변수로 남게 되지만 Dockerfile의 해당 라인이 변경되었으므로 build engine은 FROM 절 바로 밑 라인부터 캐시를 사용하지 않고 다시 빌드를 수행할 수 있다. </p>
+<h3 id="Command-instruction"><a href="#Command-instruction" class="headerlink" title="Command instruction"></a>Command instruction</h3><h4 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h4><p>Base 이미지의 경우 docker hub에서 제공하는 official 이미지를 사용하는 것을 권장한다. official 이미지는 docker principle 에 따라 최소한의 설치 요소로 구성되어 있다. 이 외에도 자주 사용하는 라이브러리가 있을 경우, 자신에게 커스터마이징 된 이미지를 미리 생성해놓고 해당 이미지를 base 이미지로 사용하는 것도 좋은 방법이다.</p>
+<h4 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h4><p>ENV 예약어는 구동 되어질 컨테이너 내부의 환경변수를 정의한다. WORKDIR, USER 등의 명령어를 조합하여 사용하지 않는 경우, 환경변수 PATH에 어플리케이션의 경로를 추가하여 구동 시 임의의 위치에서 명령어가 실행 될 수 있도록 지정할 수 있다. 또한 환경변수로 설치된 어플리케이션의 major, minor version을 명시하거나, 이미지 생성일시 등을 기록해두면 직관성을 높이고 유지보수에도 도움이 된다. 또한 위에 서술한 내용과 같이 Dockerfile 의 cache를 없애고 싶을 때도 활용할 수 있다.</p>
+<h4 id="ADD-COPY-명령어"><a href="#ADD-COPY-명령어" class="headerlink" title="ADD, COPY 명령어"></a>ADD, COPY 명령어</h4><p>ADD, COPY는 모두 이미지 build가 이뤄지는 호스트 환경의 파일을 컨테이너 내부로 복사한다는 점에서는 동일한 기능을 수행하지만, 세부적인 기능에서 차이가 있으므로 이를 구분하고 적절하게 사용하는 것이 좋다. COPY 예약어는 host 환경의 파일, 디렉토리를 대상 컨테이너 이미지 안으로 복사하는 기능만을 수행한다. 이에 비해 ADD 예약어는 2가지 기능을 추가로 제공한다. 첫번째로 제공하는 기능은 ‘Auto-extraction’ 기능이며 이는 복사하는 대상 파일이 압축 파일(tar, tar.gz)일 경우, 해당 파일의 압축을 해제하여 복사해준다. 또한 ‘Remote-URL’ 기능을 제공하여 wget등을 통하여 원격지의 파일을 복사할 파일로 지정할 수 있다. 그러나 직관성이 떨어지므로, 2가지 기능을 반드시 사용해야하는 경우가 아니라면 상대적으로 직관성이 더 높은 COPY 명령어를 권장한다.</p>
+<h4 id="RUN-명령어"><a href="#RUN-명령어" class="headerlink" title="RUN 명령어"></a>RUN 명령어</h4><p>RUN 명령어는 컨테이너 안에서 쉘 명령어를 사용할 수 있는 예약어다. 이미지를 커스터마이징하기 위해서 매우 높은 빈도로 사용되며, Dockerfile 을 작성하면서 RUN 명령어를 사용하는 대부분의 경우는 apt-get(debian,ubuntu), yum(centos) 등을 라이브러리를 설치하기 위해 사용된다. 이 경우, 최소 구성을 위하여 자동 update 기능을 지양하는 것이 좋다. apt-get 명령어를 사용할 경우 불필요한 apt-get upgrade 등의 명령어를 사용하지 않을 것을 권장한다. upgrade 명령어를 같이 사용할 경우, 최소 구성을 위한 설치 이외의, 권장되지만(nice to have) 반드시 필요하지는 않는 라이브러리 또한 함께 설치되어 이미지 레이어 크기가 증가한다. 또한 여러 개의 라이브러리를 설치할 경우, 라이브러리 간 판별성을 높이기를 위하여 알파벳순으로 정렬한 후 개행문자()를 이용하여 여러라인으로 표시하는 것이 좋다.</p>
+<h4 id="cachinig-방식-유의-cache-busting"><a href="#cachinig-방식-유의-cache-busting" class="headerlink" title="cachinig 방식 유의(cache busting)"></a>cachinig 방식 유의(cache busting)</h4><p>Docker engine은 ADD, COPY 이외의 명령어에 대하여 string 값을 비교하여 캐싱 작업을 수행한다.</p>
+<p>예를 들어, </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">14: RUN apt-get update </span><br><span class="line">15: RUN apt-get install -y curl </span><br></pre></td></tr></table></figure>
+<p>위의 빌드 스크립트를 포함한 docker image를 생성하여 사용한 후에, 사용 뒤의 용도 변경으로 인하여 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">14: RUN apt-get update </span><br><span class="line">15: RUN apt-get install -y curl nginx </span><br></pre></td></tr></table></figure>
+<p>위와 같이 변경하였을 경우, docker engine은 14번째 라인까지 캐싱 값을 사용하여 15번째 라인부터 명령어를 수행한다. 이 경우 최신 update를 사용하지 않게 되어, nginx 가 latest버전으로 설치 되지 않을 수 있다. 설치하는 library, middle ware 의 최신화를 위화여 update 구문은 항상 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">14: RUN apt-get update &amp;&amp; apt-get install something...</span><br></pre></td></tr></table></figure>
+
+<p>위와 같이 파이프라인을 통하여 함께 수행하는것을 권장한다.</p>
+<h4 id="apt-yum-캐시-제거"><a href="#apt-yum-캐시-제거" class="headerlink" title="apt, yum 캐시 제거"></a>apt, yum 캐시 제거</h4><p>apt-get update, apt-get install 명령어를 수행한 후에 파이프라인을 통하여 apt cache를 제거하면 레이어의 크기를 줄일 수 있다.<br>위의 instruction을 정리하여 아래와 같은 방식으로 apt-get 명령어를 수행하는 것을 권장한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RUN     apt-get update \ </span><br><span class="line">&amp;&amp; apt-get install -y --no-install-recommends  libjemalloc1 \ </span><br><span class="line">curl \ </span><br><span class="line">nginx \ </span><br><span class="line">&amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;* </span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Using-pipes"><a href="#Using-pipes" class="headerlink" title="Using pipes"></a>Using pipes</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RUN wget -O - https:&#x2F;&#x2F;some.site | wc -l &#x2F; number</span><br></pre></td></tr></table></figure>
+<p>위의 구문 같은 경우 wget 의 성공/실패 여부와 상관없이 그 결과 출력의 wc -l 구문 결과가 /number에 성공적으로 저장되면서 docker build engine은 이 경우 언제나 성공으로 인식한다. build 초기에 잡히는 구문 오류가 아닌, 이러한 논리적 오류을 없애기 위해선 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RUN set -o pipefail &amp;&amp; wget -O - https:&#x2F;&#x2F;some.site | wc -l &#x2F; number</span><br></pre></td></tr></table></figure>
+<p>이런식으로 set -o option을 같이 적용해줘야 한다.</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://bluefriday.github.io/2020/11/19/dockerfile-best-practice/" data-id="ckhona44y0000sp73071l4kkm" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Heechang Lee"
+        },
+        "headline": "dockerfile best practice",
+        "image": "http://bluefriday.github.io",
+        "keywords": "",
+        "genre": "",
+        "datePublished": "2020-11-19",
+        "dateCreated": "2020-11-19",
+        "dateModified": "2020-11-19",
+        "url": "http://bluefriday.github.io/2020/11/19/dockerfile-best-practice/",
+        "description": "Dockerfile Best Practice도커 컨테이너를 만들기 위해 사용되는 도커 이미지는 Dockerfile 을 통해서 생성할 수 있다. 물론 commit 명령어를 이용하여 동적으로 컨테이너로부터 이미지를 생성할 수도 있지만, 이미지의 효율적인 관리를 위해서 commit을 사용하는 것보다는 Dockerfile 을 이용하여 이미지를 생성하는 것이 좋다.",
+        "wordCount": 1110
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>follow:</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="linkedin" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-linkedin"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="book" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-book"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/ppoffice/hexo-theme-hueman" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/11/19/docker-image-garbage-collection/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">older</strong>
+        <p class="article-nav-title">docker image garbage collection</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">recents</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/19/dockerfile-best-practice/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/dockerfile-best-practice/" class="title">dockerfile best practice</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T00:38:28.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/19/docker-image-garbage-collection/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/docker-image-garbage-collection/" class="title">docker image garbage collection</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T00:32:48.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/18/docker-overview/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/18/docker-overview/" class="title">docker overview</a></p>
+                            <p class="item-date"><time datetime="2020-11-18T23:50:09.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">archives</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Heechang Lee</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'http://bluefriday.github.io/2020/11/19/dockerfile-best-practice/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>
