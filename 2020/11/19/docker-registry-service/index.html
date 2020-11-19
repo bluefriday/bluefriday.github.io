@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>docker registry service | 오늘처럼</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="" />
+    
+    <meta name="description" content="Docker registry컨테이너를 이용하여 어플리케이션의 실행환경을 가상화하기 위해서 도커 이미지가 필요한 만큼 이미지의 관리 또한 중요하다. 특히 개발&#x2F;운영 환경에서 CI&#x2F;CD 를 적용하여 이미지를 배포 하는 경우에는 이미지를 로컬 환경에 보관하는 것보다 저장가능한 다른 저장소에 보관하는 것이 좋다. 도커 측은 사용자가 컨테이너 생성을 위한 이미지를">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker registry service">
+<meta property="og:url" content="http://bluefriday.github.io/2020/11/19/docker-registry-service/index.html">
+<meta property="og:site_name" content="오늘처럼">
+<meta property="og:description" content="Docker registry컨테이너를 이용하여 어플리케이션의 실행환경을 가상화하기 위해서 도커 이미지가 필요한 만큼 이미지의 관리 또한 중요하다. 특히 개발&#x2F;운영 환경에서 CI&#x2F;CD 를 적용하여 이미지를 배포 하는 경우에는 이미지를 로컬 환경에 보관하는 것보다 저장가능한 다른 저장소에 보관하는 것이 좋다. 도커 측은 사용자가 컨테이너 생성을 위한 이미지를">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-19T00:54:41.000Z">
+<meta property="article:modified_time" content="2020-11-19T10:00:19.289Z">
+<meta property="article:author" content="Heechang Lee">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+    
+
+    
+        <link rel="alternate" href="/" title="오늘처럼" type="application/atom+xml" />
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">Home</a>
+                                </li>
+                            
+                                    
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" target="_blank" rel="noopener" href="http://bluefriday.kr">About</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    uncategorized
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-docker-registry-service" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        docker registry service
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/11/19/docker-registry-service/" class="article-date">
+       <time datetime="2020-11-19T00:54:41.000Z" itemprop="datePublished">2020-11-19</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/11/19/docker-registry-service/" class="article-date">
+     <time datetime="2020-11-19T10:00:19.289Z" itemprop="dateModified">2020-11-19</time>
+  </a>
+</div>
+
+
+                
+
+                
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h2 id="Docker-registry"><a href="#Docker-registry" class="headerlink" title="Docker registry"></a>Docker registry</h2><p>컨테이너를 이용하여 어플리케이션의 실행환경을 가상화하기 위해서 도커 이미지가 필요한 만큼 이미지의 관리 또한 중요하다. 특히 개발/운영 환경에서 CI/CD 를 적용하여 이미지를 배포 하는 경우에는 이미지를 로컬 환경에 보관하는 것보다 저장가능한 다른 저장소에 보관하는 것이 좋다. 도커 측은 사용자가 컨테이너 생성을 위한 이미지를 저장하고 다른 사용자들과 공유할 수 있도록 컨테이너 이미지에 대한 저장소(이하 registry) 서비스를 제공하고 있다. 이를 통하여 사용자는 쉽게 이미지를 registry에 저장(push)하고 필요한 이미지를 받아올(pull) 수 있다.</p>
+<p>이러한 registry 서비스는 공개유형에 따라 public, private 으로 구분 가능하다. public registry의 경우 모든 사람들이 자유롭게 이용할 수 있도록 이미지가 공개되어 있으며, 사용자들은 필요에 따라 자신이 원하는 이미지를 검색하고 해당 이미지를 사용할 수 있다. private registry는 사용자가 자신만의 별도의 registry를 따로 생성하여 custom image들을 보관할 수 있도록 해준다. 여기서는 public/private registry에 대하여 조금 더 다뤄본다.</p>
+<h3 id="Docker-public-registry"><a href="#Docker-public-registry" class="headerlink" title="Docker public registry"></a>Docker public registry</h3><p>도커 측은 docker hub(<a target="_blank" rel="noopener" href="https://hub.docker.com/">https://hub.docker.com/</a>) 라는 public registry를 제공한다. 물론 docker hub 의 경우 회원가입/로그인 후에 private한 용도로도 사용할 수 있으나 docker hub 자체는 public registry로서의 성격이 더 크고, 후술할 docker registry 가 private registry 로서의 기능을 제공하고 있으므로 여기서는 public registry 로서의 docker hub 만을 알아보기로 한다.<br>docker hub를 통하여 사용자는 이미지를 조회/검색할 수 있으며, 특정 이미지에 대한 description을 확인할 수 있다. 또한 CLI 환경에서도 docker search 명령어를 이용할 경우 docker hub에서 사용되는 이미지를 조회할 수 있다. 아래 화면은 각각 docker hub와 docker client를 이용하여 nginx 이미지를 조회한 예이다.</p>
+<p>[그림1 : docker hub / docker search 등을이용하여 nginx 이미지를 조회한 예]</p>
+<p>이렇게 조회한 이미지의 경우 CLI 환경에서 docker pull 명령어로 누구나 해당 이미지를 조회할 수 있다.</p>
+<h3 id="Docker-private-registry"><a href="#Docker-private-registry" class="headerlink" title="Docker private registry"></a>Docker private registry</h3><p>위와 같이 public registry 인 docker hub를 이용하여 자주 사용되는 이미지들을 쉽게 받아서 실행 시킬 수 있지만, 컨테이너를 이용하여 이미지를 받고 또 받은 이미지를 이용하여 새로운 이미지를 생성하다보면 타인에게 공개되지 않고 자신만이 사용할 수 있는 이미지들도 존재하게 된다. 이러한 이미지는 public registry에 올리기 어려운데 이럴 때 사용자가 자신의 이미지를 저장하고 특정 개인/집단에게만 공유할 수 있도록 해주는 private registry를 사용할 수 있다.</p>
+<p>private registry는 host PC에 background daemon으로 구동되는 것이 아니라, host PC에 docker 플랫폼 위에 도커 컨테이너로서 구동된다. 즉, 컨테이너 이미지를 저장하는 저장소 또한 컨테이너로 구동되어지는 방식이다. 당연히 host PC에는 Docker 가 필수적으로 설치되어 있어야 하며,  registry 컨테이너를 구동하기 위한 docker image가 필요하다. 해당 이미지는 docker hub에서 쉽게 조회해서 받아올 수 있다. </p>
+<p>아래와 같은 명령어를 사용하여 registry 이미지를 조회하고 docker hub를 통해서 내려받자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker search registry</span><br><span class="line">NAME     DESCRIPTION                                                 STARS          OFFICIAL             AUTOMATED</span><br><span class="line">registry    The Docker Registry 2.0 implementation for s…     2053            [OK]                </span><br></pre></td></tr></table></figure>
+
+<p>받아온 이미지로 docker registry container를 구동하기 전에 알아둬야 할 사항들이 있다. 먼저 registry는 내부적으로 5000번 포트를 사용한다. 컨테이너로 registry 를 구동한 후에 외부에서 해당 컨테이너에 접속하기 위해서 5000번 포트를 노출시켜줄 필요가 있다.<br>또한 저장소 성격을 가진 컨테이너이므로 해당 컨테이너가 삭제 될 경우 저장되어 있는 내용(여기서는 도커 이미지)이 모두 지워지는 것을 방지하기 위하여 미리 컨테이너 내부의 실제 저장 파일 위치를 docker volume 으로 연결해줘야 한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d --name&#x3D;private_registry -p 5000:5000 -v &#x2F;test&#x2F;registry_data:&#x2F;var&#x2F;lib&#x2F;registry registry:latest</span><br></pre></td></tr></table></figure>
+
+<p>이제 컨테이너로 private registry를 구동하였다. 이 registry는 로컬 port 5000번으로 노출되어 있어, 해당 포트를 통해 registry pull/push를 사용할 수 있다. 먼저 호스트에 있는 debian 이미지를 로컬 url 로 태그를 변경한 후에 다시 push 보면 아래와 같이 registry 에 이미지를 저장할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ docker tag debian:latest localhost:5000&#x2F;debian:latest</span><br><span class="line">$ docker push localhost:5000&#x2F;debian:latest</span><br><span class="line">The push refers to repository [localhost:5000&#x2F;debian]</span><br><span class="line">5d6cbe0dbcf9: Pushed </span><br><span class="line">latest: digest: sha256:ec838b15e057f4e5bb42cc194923782c8153e3dbac1a12c32b50d88ef123008a size: 529</span><br></pre></td></tr></table></figure>
+
+<p>이제 호스트에 debian 이미지가 삭제되어도, 컨테이너 저장소 안에 해당 이미지가 존재하므로, docker pull 명령어를 이용하여 해당 이미지를 언제든지 불러올 수 있다. 위와 같은 방식을 이용하여 private registry를 docker container의 형태로 구동하고, custom 이미지를 자유롭게 저장하고 불러올 수 있다.</p>
+<h3 id="Docker-registry-config"><a href="#Docker-registry-config" class="headerlink" title="Docker registry config"></a>Docker registry config</h3><p>docker registry를 사용하면, private 한 환경에서 image registry를 구축할 수 있다. 이번에는 단순하게 registry를 사용하는 것 뿐만 아니라 registry 를 배포하고 설정을 변경하여 실제 개발/운영 환경에서 사용하기 위한 추가사항에 대하여 다루어본다.</p>
+<h4 id="1-Registry-를-항상-재시작-하도록-설정"><a href="#1-Registry-를-항상-재시작-하도록-설정" class="headerlink" title="1. Registry 를 항상 재시작 하도록 설정"></a>1. Registry 를 항상 재시작 하도록 설정</h4><p>Docker registry 컨테이너가 구동되는 호스트가 재부팅 되거나, 호스트 내에서 docker process 가 재시작 될 경우 자동으로 registry 컨테이너가 구동되도록 할 경우, container 구동(run)시에 ‘–restart=always’ 옵션을 추가할 수 있다. public registry를 사용하지 않고, 로컬 환경이나 private 환경에서 고정적으로 registry를 사용하는 경우 이 옵션을 부여하여, 호스트의 docker 환경이 재부팅 되더라도 항상 registry가 구동되어 있도록 설정해주자. (사용 예는 아래 3번 예제와 함께 표시한다.)</p>
+<h4 id="2-Registry-의-포트를-지정하여-구동"><a href="#2-Registry-의-포트를-지정하여-구동" class="headerlink" title="2. Registry 의 포트를 지정하여 구동"></a>2. Registry 의 포트를 지정하여 구동</h4><p>registry는 기본적으로 5000번 포트를 사용하여 서비스를 노출한다. 따라서 registry를 사용하기 위해서는 구동시에 port 옵션으로 5000번 포트를 그대로 노출하여 사용하는 것이 일반적이다. 하지만 특별한 경우에 따라서 로컬 환경에서 이미 5000번 포트를 사용하는 경우, container내부의 5000번 포트와 로컬환경의 다른 포트를 연결해줘야 한다. 물론 이렇게 다른 포트를 지정할 수도 있지만, 직관성을 위하여 컨테이너와 호스트에서 동일한 포트를 사용하고자 할 경우 컨테이너 내부의 환경변수로 REGISTRY_HTTP_ADDR 을 지정하여 내부의 registry 포트를 변경하고 동일한 포트로 호스트 포트를 바인딩 할 수도 있다. 아래 3번 예제를 참고하자.</p>
+<h4 id="3-Volume-directory를-지정"><a href="#3-Volume-directory를-지정" class="headerlink" title="3. Volume directory를 지정"></a>3. Volume directory를 지정</h4><p>registry 는 기본적으로 저장소 역할을 하기 때문에 컨테이너 내부에 계속 해서 데이터(이 경우는 docker image)가 적재 되는 구조이다. 기본적으로 컨테이너 내부의 /var/lib/registry 에 적재되는 데이터는 컨테이너가 삭제될 경우 컨테이너와 함께 삭제되어 유지되지 않는다. 따라서 registry 의 적재되는 데이터는 docker volume 명령어를 이용하여 호스트 환경에 영구적으로(persistent) 유지해 주는 것이 좋다. restart 옵션과 함께 사용할 경우, 호스트 docker 서비스가 중지 되는 경우에도 재기동 후에 registry 안의 데이터를 유지할 수 있다. 컨테이너 내부에 적재되는 데이터는 휘발성이므로, 비단 registry 이미지가 아니더라도, 데이터 성격의 컨테이너의 경우 항상 volume 옵션을 사용해주자. (적재되는 경로는 config 파일에 지정하여 변경 가능하다)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d --name&#x3D;registry --restart&#x3D;always -e REGISTRY_HTTP_ADDR&#x3D;0.0.0.0:5007 -p 5007:5007 -v </span><br><span class="line">&#x2F;registry:&#x2F;var&#x2F;lib&#x2F;registry registry:latest</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-외부에서-registry-에-접근가능하도록-설정"><a href="#4-외부에서-registry-에-접근가능하도록-설정" class="headerlink" title="4.  외부에서 registry 에 접근가능하도록 설정"></a>4.  외부에서 registry 에 접근가능하도록 설정</h4><p>앞에서의 방법을 이용하여 registry를 구동하는 경우 기본적으로 localhost 로만 접근이 가능하다. 즉, 모든 이미지가 local에 있으며 이미지의 full name은 localhost:5000/image:tag 등으로 사용된다. 하지만 아무리 private한 환경에서 사용하기 위한 registry라고 해도 이렇게 로컬 호스트에서만 접근이 가능할 경우 활용성이 매우 떨어진다. 이번에는 private 네트워크 내부의, registry가 떠있는 host로 접근이 가능한, 다른 서버에서 registry를 이용하여 이미지를 저장하고 받아올 수 있도록 registry를 외부로 노출해보자. 먼저 registry가 구동되어 있는 host에 대한 crt 파일과 key 파일을 준비한다. (해당 파일을 생성하는 과정에 대해서는 여기서 다루지 않으니 다른 관련 자료를 참조하자.)  2개의 인증서 파일이 /certs 경로에 있다고 가정할 경우 아래와 같은 구동 명령어를 사용하여 registryf를 구동한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">     --name registry \</span><br><span class="line">     -v &#x2F;certs:&#x2F;certs \</span><br><span class="line">     -e REGISTRY_HTTP_ADDR&#x3D;0.0.0.0:443 \</span><br><span class="line">     -e REGISTRY_HTTP_TLS_CERTIFICATE&#x3D;&#x2F;certs&#x2F;server.crt \</span><br><span class="line">     -e REGISTRY_HTTP_TLS_KEY&#x3D;&#x2F;certs&#x2F;server.key \</span><br><span class="line">     -p 443:443 \</span><br><span class="line">     registry:latest</span><br></pre></td></tr></table></figure>
+
+<p>위와 같이 구동할 경우 registry 호스트에 접근가능한 다른 네트워크에서 인증서에 등록된 도메인으로 docker pull/push 등이 가능하다.</p>
+<h4 id="5-registry-접근제어"><a href="#5-registry-접근제어" class="headerlink" title="5. registry 접근제어"></a>5. registry 접근제어</h4><p>안전성이 보증되는 네트워크에서 구동되는 경우가 아니라면 registry 에 대한 접근제어 또한 필요하다. docker registry는 기본적인 패스워드 기반의 인증을 제공하고 있다. 이번에는 registry 내부에서 이미 설치되어 있는 htpasswd 유틸리티를 이용하여 registry 접근 제어를 구현해보자. 먼저 registry 내부의 htpasswd 명령어를 사용하기 위해 아래의 명령을 실행한다. 해당 명령은 아이디와 패스워드를 각각 ‘admin’, ‘password’로 지정하여 특정 위치에 해당 계정 정보와 관련된 파일을 생성해준다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir $PWD&#x2F;auth</span><br><span class="line">$ docker run --entrypoint htpasswd registry -Bbn &quot;admin&quot; &quot;password&quot; &gt; $PWD&#x2F;auth&#x2F;htpasswd</span><br></pre></td></tr></table></figure>
+
+<p>이제 생성된 파일을 이용하여 registry를 구동한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d --name registry \</span><br><span class="line">     -v $PWD&#x2F;auth:&#x2F;auth \</span><br><span class="line">     -e &quot;REGISTRY_AUTH&#x3D;htpasswd&quot; \</span><br><span class="line">     -e &quot;REGISTRY_AUTH_HTPASSWD_PATH&quot;&#x3D;&#x2F;auth&#x2F;htpasswd \</span><br><span class="line">     -e &quot;REGISTRY_AUTH_HTPASSWD_REALM&#x3D;Registry Realm&quot; \</span><br><span class="line">     -p 5000:5000 \</span><br><span class="line">     registry</span><br></pre></td></tr></table></figure>
+
+
+<p>위와 같이 구동할 경우, 지정한 아이디와 패스워드를 이용하여 아래와 같이 로그인이 가능하다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker login localhost:5000</span><br></pre></td></tr></table></figure>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://bluefriday.github.io/2020/11/19/docker-registry-service/" data-id="ckhonyuyu0000lu730usi3t4w" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Heechang Lee"
+        },
+        "headline": "docker registry service",
+        "image": "http://bluefriday.github.io",
+        "keywords": "",
+        "genre": "",
+        "datePublished": "2020-11-19",
+        "dateCreated": "2020-11-19",
+        "dateModified": "2020-11-19",
+        "url": "http://bluefriday.github.io/2020/11/19/docker-registry-service/",
+        "description": "Docker registry컨테이너를 이용하여 어플리케이션의 실행환경을 가상화하기 위해서 도커 이미지가 필요한 만큼 이미지의 관리 또한 중요하다. 특히 개발/운영 환경에서 CI/CD 를 적용하여 이미지를 배포 하는 경우에는 이미지를 로컬 환경에 보관하는 것보다 저장가능한 다른 저장소에 보관하는 것이 좋다. 도커 측은 사용자가 컨테이너 생성을 위한 이미지를 ",
+        "wordCount": 1399
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>follow:</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="linkedin" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-linkedin"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="book" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-book"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/ppoffice/hexo-theme-hueman" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/11/19/docker-image-structure/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">older</strong>
+        <p class="article-nav-title">docker image structure</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">recents</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/19/docker-registry-service/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/docker-registry-service/" class="title">docker registry service</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T00:54:41.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/19/docker-image-structure/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/docker-image-structure/" class="title">docker image structure</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T00:50:49.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/19/dockerfile-best-practice/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/dockerfile-best-practice/" class="title">dockerfile best practice</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T00:38:28.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/19/docker-image-garbage-collection/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/docker-image-garbage-collection/" class="title">docker image garbage collection</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T00:32:48.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/11/18/docker-overview/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/18/docker-overview/" class="title">docker overview</a></p>
+                            <p class="item-date"><time datetime="2020-11-18T23:50:09.000Z" itemprop="datePublished">2020-11-19</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">archives</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">5</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Heechang Lee</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'http://bluefriday.github.io/2020/11/19/docker-registry-service/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>
