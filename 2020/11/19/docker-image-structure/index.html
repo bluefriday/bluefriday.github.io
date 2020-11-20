@@ -19,11 +19,13 @@
 <meta property="og:site_name" content="오늘처럼">
 <meta property="og:description" content="1. 도커 이미지 구조도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://bluefriday.github.io/image/docker-image-structure-01.jpg">
 <meta property="article:published_time" content="2020-11-19T00:50:49.000Z">
-<meta property="article:modified_time" content="2020-11-19T09:52:17.174Z">
+<meta property="article:modified_time" content="2020-11-20T04:44:53.116Z">
 <meta property="article:author" content="Heechang Lee">
 <meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://bluefriday.github.io/image/docker-image-structure-01.jpg">
     
 
     
@@ -182,7 +184,7 @@
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
   <a href="/2020/11/19/docker-image-structure/" class="article-date">
-     <time datetime="2020-11-19T09:52:17.174Z" itemprop="dateModified">2020-11-19</time>
+     <time datetime="2020-11-20T04:44:53.116Z" itemprop="dateModified">2020-11-20</time>
   </a>
 </div>
 
@@ -204,13 +206,17 @@
 
             
 
-            <h3 id="1-도커-이미지-구조"><a href="#1-도커-이미지-구조" class="headerlink" title="1. 도커 이미지 구조"></a>1. 도커 이미지 구조</h3><p>도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를 생성하는 것과 유사하게 도커 이미지를 이용하여 도커 컨테이너를 생성한다고 이해해도 좋다.</p>
+            <p><img src="/image/docker-image-structure-01.jpg" alt="docker-image-structure-01"></p>
+<h3 id="1-도커-이미지-구조"><a href="#1-도커-이미지-구조" class="headerlink" title="1. 도커 이미지 구조"></a>1. 도커 이미지 구조</h3><p>도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를 생성하는 것과 유사하게 도커 이미지를 이용하여 도커 컨테이너를 생성한다고 이해해도 좋다.</p>
 <p>이러한 도커 이미지는 서로 다른 파일시스템으로 구성되어있다. ‘서로 다른 파일시스템’ 이라는 말에 쉽게 이해가 되지 않을 수 있는데 이를 위해 구조적으로 나타내면 아래와 같다.</p>
+<p><img src="/image/docker-image-structure-02.jpg" alt="docker-image-structure-02"></p>
 <p>위의 경우 서로 다른 3개의 층으로 구성되어 있는 스택(층) 구조로 도커 이미지를 표현하였다. 이 때 각각의 층을 Docker에서는 레이어(layer) 라고 부르며 특별히 이미지를 구성하고 있는 레이어를 이미지 레이어라고 부른다. 즉 위의 이미지는 서로 다른 3개의 이미지 레이어로 구성되어 있다고 볼 수 있다.</p>
 <p>도커 클라이언트를 통하여 컨테이너를 생성해 달라고 요청(docker run)하면 도커는 먼저 이 이미지를 도커가 관리하는 파일시스템의 영역으로 그대로 복사한다. 그 뒤에 이미지의 최상단에 ‘컨테이너 레이어’ 라고 불리는 하나의 얇은 레이어를 추가하여 컨테이너를 생성한다. 그리고 사용자에게는 유니온 파일 시스템(UnionFS)을 이용하여 마치 이러한 여러개의 파일 시스템(레이어)으로 구성되어 있는 이미지 스택 구조가</p>
 <p>하나의 파일 시스템처럼 보이도록 통합된 뷰(view)를 제공해준다.</p>
+<p><img src="/image/docker-image-structure-03.jpg" alt="docker-image-structure-03"></p>
 <p>또한 사용자가 컨테이너 안에서 읽고 쓰는 모든 작업들은 이 컨테이너 레이어에 기록되며, 이미지 레이어에는 기록되지 않는다. 도커 엔진이 파일 시스템을 제어하여 이미지 레이어는 read only 모드로 지정하고, 컨테이너 레이어는 read/write 모드로 지정해주므로 이미지 레이어는 사용자의 작업에 따라 변경 되지 않는다. 따라서 또 다른 사용자가 동일한 이미지를 대상으로 컨테이너를 생성해달라고 요청할 경우, 도커 엔진은 다시 기존의 이미지를 복사하여 그 위에 새로운 컨테이너 레이어만을 레이어 최상단에 올려두고 유니온 파일 시스템을 이용한 통합된 뷰를 제공해준다. 이러한 방식을 통하여 하나의 이미지로 여러 개의 컨테이너를 생성함으로써 디스크 공간을 효율적으로 사용할 수 있다.</p>
 <p>하지만 변경되지 않는 이미지 레이어와 달리 컨테이너 레이어는 해당 컨테이너가 삭제 될 때 같이 삭제 된다. 따라서 사용자가 컨테이너 안에서 작업한 모든 읽기/쓰기 작업들은 컨테이너가 제거되는 동시에 같이 지워지게 된다. Docker에서 제공하는 volume 기능을 이용하여 컨테이너 안에서 작업한 내용이나 파일 등을 유지할 수도 있지만 경우에 따라 컨테이너 레이어에서 한 작업을 그대로 유지한 상태의 이미지를 새로 만드는 것이 더 효율적일 때도 있다.</p>
+<p><img src="/image/docker-image-structure-04.jpg" alt="docker-image-structure-04"></p>
 <p>이러한 경우 사용자는 도커 엔진에게 현재의 컨테이너를 이루고 있는 컨테이너 레이어를 이미지 레이어로 변경해 달라고 요청할 수 있다. docker commit 명령어가 이 경우에 사용되며, 이 명령어를 사용할 경우 도커는 해당 컨테이너의 모든 레이어를 이미지 레이어로 변경하여 새로운 이미지를 생성한다. 이 이미지 레이어는 기존에 이미지 레이어에서 컨테이너 레이어가 read only인 이미지 레이어로 변경되어 있는 구성을 이루게 되며, 사용자는 이 이미지를 이용하여 다시 새로운 컨테이너를 생성할 수도 있다.</p>
 <p>위의 commit 방식은 도커 이미지를 생성하기 위해서 도커 측에서 제공하는 방법 중 하나이다. </p>
 <h4 id="Docker-image를-생성하기-위한-방법"><a href="#Docker-image를-생성하기-위한-방법" class="headerlink" title="Docker image를 생성하기 위한 방법"></a>Docker image를 생성하기 위한 방법</h4><ol>
@@ -222,9 +228,8 @@
 <h2 id="2-Docker-Build와-Image-layer"><a href="#2-Docker-Build와-Image-layer" class="headerlink" title="2. Docker Build와 Image layer"></a>2. Docker Build와 Image layer</h2><p>서로 다른 파일 시스템으로 구성되어 있는 Docker image 에 대하여 더 쉽게 이해하기 위하여 Dockerfile 과 build 를 이용하여 예를 들면 아래와 같다.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y nginx</span><br><span class="line">RUN chown -R blue:blue &#x2F;var&#x2F;lib&#x2F;nginx</span><br><span class="line">RUN mkdir -p &#x2F;home&#x2F;blue&#x2F;my_log</span><br><span class="line"></span><br><span class="line">CMD [&quot;nginx&quot;]</span><br></pre></td></tr></table></figure>
 
-
-
 <p>위 Dockerfile 은 Ubuntu 이미지를 이용하여 nginx를 설치하고 구동하는 간단한 예제이다. (실제 예가 아니며, Dockerfile 의 문법 자체에 대해서는 블로그 내 다른 포스팅을 참조하자.) 이 경우 Docker build 명령어를 이용하여 이미지를 생성할 경우 레이어 구조는 개략적으로 아래와 같다고 볼 수 있다. </p>
+<p><img src="/image/docker-image-structure-05.jpg" alt="docker-image-structure-05"></p>
 <p>ubuntu 파일 시스템에서 사용하는 주 디렉토리들을 위와 같이 표현하였다. 최 하단의 base image layer는 ubuntu:14.04의 파일 시스템을 구성하고 있으며, 그 위로 Dockerbuild 파일의 명령어 줄 단위로 레이어가 생기며 해당 레이어에서 실행하는 명령으로 인하여 변경되는 부분에 대해서 해당 레이어가 차이점 (diff or delta 값)을 보관하고 있다. 이러한 방식으로 변경된 내용들을 상위 레이어가 부분적으로 보유하고 있으며, 가장 마지막에 Container layer가 올라가고  그 뒤에 UnionFS 를 사용한다. UnionFS는 하나의 디렉토리에 서로 다른 파일 시스템을 마운트시켜주는 구조인데, 마운트의 특성 상 가장 마지막에 덮어진(mount) 레이어가 보이게 된다. 따라서 여러 개의 파일시스템이 적용되어 있는 디렉토리도 사용자에게는 하나의 파일 시스템처럼 보이는 뷰를 제공해준다. 위와 같은 방식으로 Docker image 가 구성된다고 보면 이해하기 쉽다.</p>
 
         </div>
@@ -304,15 +309,16 @@
             "name": "Heechang Lee"
         },
         "headline": "docker image structure",
-        "image": "http://bluefriday.github.io",
+        "image": "http://bluefriday.github.io/image/docker-image-structure-01.jpg",
         "keywords": "",
         "genre": "",
         "datePublished": "2020-11-19",
         "dateCreated": "2020-11-19",
-        "dateModified": "2020-11-19",
+        "dateModified": "2020-11-20",
         "url": "http://bluefriday.github.io/2020/11/19/docker-image-structure/",
-        "description": "1. 도커 이미지 구조도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를 ",
-        "wordCount": 699
+        "description": "
+1. 도커 이미지 구조도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를",
+        "wordCount": 709
     }
 </script>
 
@@ -412,6 +418,26 @@
                     <li>
                         
                         <div class="item-thumbnail">
+                            <a href="/2020/11/19/Introduction-to-cloud-computing/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2020/11/19/Introduction-to-cloud-computing/" class="title">Introduction to cloud computing</a></p>
+                            <p class="item-date"><time datetime="2020-11-19T19:45:44.000Z" itemprop="datePublished">2020-11-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
                             <a href="/2020/11/19/edge-computing-and-kube-edge/" class="thumbnail">
     
     
@@ -475,7 +501,7 @@
                             <a href="/2020/11/19/docker-image-structure/" class="thumbnail">
     
     
-        <span class="thumbnail-image thumbnail-none"></span>
+        <span style="background-image:url(/image/docker-image-structure-01.jpg)" alt="docker image structure" class="thumbnail-image"></span>
     
     
 </a>
@@ -486,26 +512,6 @@
                             <p class="item-category"></p>
                             <p class="item-title"><a href="/2020/11/19/docker-image-structure/" class="title">docker image structure</a></p>
                             <p class="item-date"><time datetime="2020-11-19T00:50:49.000Z" itemprop="datePublished">2020-11-19</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2020/11/19/dockerfile-best-practice/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"></p>
-                            <p class="item-title"><a href="/2020/11/19/dockerfile-best-practice/" class="title">dockerfile best practice</a></p>
-                            <p class="item-date"><time datetime="2020-11-19T00:38:28.000Z" itemprop="datePublished">2020-11-19</time></p>
                         </div>
                     </li>
                 
@@ -521,7 +527,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">archives</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">7</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">8</span></li></ul>
         </div>
     </div>
 
