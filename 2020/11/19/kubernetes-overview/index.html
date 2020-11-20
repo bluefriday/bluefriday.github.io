@@ -6,26 +6,24 @@
     
 
     
-    <title>docker image structure | 오늘처럼</title>
+    <title>kubernetes-overview | 오늘처럼</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="keywords" content="" />
     
-    <meta name="description" content="1. 도커 이미지 구조도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를">
+    <meta name="description" content="KubernetesApplication 배포의 흐름전통적인 어플리케이션 구성 환경의 경우 물리 리소스인 하드웨어 위에 미들웨어로서 운영체제를 구축하고 해당 운영체제 위에서 소프트웨어를 배포하여 서비스를 제공하게 된다.그러나 이러한 기존 방식에서는 수시로 변동되는 서비스 요청에 따라 네트워크, 스토리지 등의 하드웨어 자원을 효율적으로 사용하기가 어렵다.이에">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker image structure">
-<meta property="og:url" content="http://bluefriday.github.io/2020/11/19/docker-image-structure/index.html">
+<meta property="og:title" content="kubernetes-overview">
+<meta property="og:url" content="http://bluefriday.github.io/2020/11/19/kubernetes-overview/index.html">
 <meta property="og:site_name" content="오늘처럼">
-<meta property="og:description" content="1. 도커 이미지 구조도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를">
+<meta property="og:description" content="KubernetesApplication 배포의 흐름전통적인 어플리케이션 구성 환경의 경우 물리 리소스인 하드웨어 위에 미들웨어로서 운영체제를 구축하고 해당 운영체제 위에서 소프트웨어를 배포하여 서비스를 제공하게 된다.그러나 이러한 기존 방식에서는 수시로 변동되는 서비스 요청에 따라 네트워크, 스토리지 등의 하드웨어 자원을 효율적으로 사용하기가 어렵다.이에">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://bluefriday.github.io/image/docker-image-structure-01.jpg">
-<meta property="article:published_time" content="2020-11-19T00:50:49.000Z">
-<meta property="article:modified_time" content="2020-11-20T04:44:53.116Z">
+<meta property="article:published_time" content="2020-11-19T21:35:15.000Z">
+<meta property="article:modified_time" content="2020-11-20T06:36:08.003Z">
 <meta property="article:author" content="Heechang Lee">
 <meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://bluefriday.github.io/image/docker-image-structure-01.jpg">
     
 
     
@@ -157,14 +155,14 @@
 </div>
 
                         <div class="main-body-content">
-                            <article id="post-docker-image-structure" class="article article-single article-type-post" itemscope itemprop="blogPost">
+                            <article id="post-kubernetes-overview" class="article article-single article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-        docker image structure
+        kubernetes-overview
         </h1>
     
 
@@ -175,16 +173,16 @@
                 
   <div class="article-date">
     <i class="fa fa-calendar"></i>
-    <a href="/2020/11/19/docker-image-structure/" class="article-date">
-       <time datetime="2020-11-19T00:50:49.000Z" itemprop="datePublished">2020-11-19</time>
+    <a href="/2020/11/19/kubernetes-overview/" class="article-date">
+       <time datetime="2020-11-19T21:35:15.000Z" itemprop="datePublished">2020-11-20</time>
     </a>
   </div>
 
 
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
-  <a href="/2020/11/19/docker-image-structure/" class="article-date">
-     <time datetime="2020-11-20T04:44:53.116Z" itemprop="dateModified">2020-11-20</time>
+  <a href="/2020/11/19/kubernetes-overview/" class="article-date">
+     <time datetime="2020-11-20T06:36:08.003Z" itemprop="dateModified">2020-11-20</time>
   </a>
 </div>
 
@@ -206,31 +204,34 @@
 
             
 
-            <p><img src="/image/docker-image-structure-01.jpg" alt="docker-image-structure-01"></p>
-<h3 id="1-도커-이미지-구조"><a href="#1-도커-이미지-구조" class="headerlink" title="1. 도커 이미지 구조"></a>1. 도커 이미지 구조</h3><p>도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를 생성하는 것과 유사하게 도커 이미지를 이용하여 도커 컨테이너를 생성한다고 이해해도 좋다.</p>
-<p>이러한 도커 이미지는 서로 다른 파일시스템으로 구성되어있다. ‘서로 다른 파일시스템’ 이라는 말에 쉽게 이해가 되지 않을 수 있는데 이를 위해 구조적으로 나타내면 아래와 같다.</p>
-<p><img src="/image/docker-image-structure-02.jpg" alt="docker-image-structure-02"></p>
-<p>위의 경우 서로 다른 3개의 층으로 구성되어 있는 스택(층) 구조로 도커 이미지를 표현하였다. 이 때 각각의 층을 Docker에서는 레이어(layer) 라고 부르며 특별히 이미지를 구성하고 있는 레이어를 이미지 레이어라고 부른다. 즉 위의 이미지는 서로 다른 3개의 이미지 레이어로 구성되어 있다고 볼 수 있다.</p>
-<p>도커 클라이언트를 통하여 컨테이너를 생성해 달라고 요청(docker run)하면 도커는 먼저 이 이미지를 도커가 관리하는 파일시스템의 영역으로 그대로 복사한다. 그 뒤에 이미지의 최상단에 ‘컨테이너 레이어’ 라고 불리는 하나의 얇은 레이어를 추가하여 컨테이너를 생성한다. 그리고 사용자에게는 유니온 파일 시스템(UnionFS)을 이용하여 마치 이러한 여러개의 파일 시스템(레이어)으로 구성되어 있는 이미지 스택 구조가</p>
-<p>하나의 파일 시스템처럼 보이도록 통합된 뷰(view)를 제공해준다.</p>
-<p><img src="/image/docker-image-structure-03.jpg" alt="docker-image-structure-03"></p>
-<p>또한 사용자가 컨테이너 안에서 읽고 쓰는 모든 작업들은 이 컨테이너 레이어에 기록되며, 이미지 레이어에는 기록되지 않는다. 도커 엔진이 파일 시스템을 제어하여 이미지 레이어는 read only 모드로 지정하고, 컨테이너 레이어는 read/write 모드로 지정해주므로 이미지 레이어는 사용자의 작업에 따라 변경 되지 않는다. 따라서 또 다른 사용자가 동일한 이미지를 대상으로 컨테이너를 생성해달라고 요청할 경우, 도커 엔진은 다시 기존의 이미지를 복사하여 그 위에 새로운 컨테이너 레이어만을 레이어 최상단에 올려두고 유니온 파일 시스템을 이용한 통합된 뷰를 제공해준다. 이러한 방식을 통하여 하나의 이미지로 여러 개의 컨테이너를 생성함으로써 디스크 공간을 효율적으로 사용할 수 있다.</p>
-<p>하지만 변경되지 않는 이미지 레이어와 달리 컨테이너 레이어는 해당 컨테이너가 삭제 될 때 같이 삭제 된다. 따라서 사용자가 컨테이너 안에서 작업한 모든 읽기/쓰기 작업들은 컨테이너가 제거되는 동시에 같이 지워지게 된다. Docker에서 제공하는 volume 기능을 이용하여 컨테이너 안에서 작업한 내용이나 파일 등을 유지할 수도 있지만 경우에 따라 컨테이너 레이어에서 한 작업을 그대로 유지한 상태의 이미지를 새로 만드는 것이 더 효율적일 때도 있다.</p>
-<p><img src="/image/docker-image-structure-04.jpg" alt="docker-image-structure-04"></p>
-<p>이러한 경우 사용자는 도커 엔진에게 현재의 컨테이너를 이루고 있는 컨테이너 레이어를 이미지 레이어로 변경해 달라고 요청할 수 있다. docker commit 명령어가 이 경우에 사용되며, 이 명령어를 사용할 경우 도커는 해당 컨테이너의 모든 레이어를 이미지 레이어로 변경하여 새로운 이미지를 생성한다. 이 이미지 레이어는 기존에 이미지 레이어에서 컨테이너 레이어가 read only인 이미지 레이어로 변경되어 있는 구성을 이루게 되며, 사용자는 이 이미지를 이용하여 다시 새로운 컨테이너를 생성할 수도 있다.</p>
-<p>위의 commit 방식은 도커 이미지를 생성하기 위해서 도커 측에서 제공하는 방법 중 하나이다. </p>
-<h4 id="Docker-image를-생성하기-위한-방법"><a href="#Docker-image를-생성하기-위한-방법" class="headerlink" title="Docker image를 생성하기 위한 방법"></a>Docker image를 생성하기 위한 방법</h4><ol>
-<li>Dockerfile 을 작성후 build 명령어를 통하여 이미지 빌드 (정적 생성)</li>
-<li>구동되어 있는 container 를 대상으로 Docker commit 명령어를 사용하여 동적으로 이미지 생성</li>
-<li>Docker save 명령으로 tar파일로 내려받은 이미지를 Docker load 명령어로 로컬 환경에 적재</li>
-</ol>
-<p>다만 Commit 명령어를 이용하여 도커 이미지를 생성하는것보다 Dockerfile 을 작성하고 이를 build 하여 새로운 도커 이미지를 생성하는 것을 권장한다. Docker commit 으로 이미지를 생성할 경우 해당 이미지의 이력이 기록되지 않아 이미지의 내용이나 출처를 알기 어려워 유지보수하기 어려워 진다는 단점이 있다.</p>
-<h2 id="2-Docker-Build와-Image-layer"><a href="#2-Docker-Build와-Image-layer" class="headerlink" title="2. Docker Build와 Image layer"></a>2. Docker Build와 Image layer</h2><p>서로 다른 파일 시스템으로 구성되어 있는 Docker image 에 대하여 더 쉽게 이해하기 위하여 Dockerfile 과 build 를 이용하여 예를 들면 아래와 같다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y nginx</span><br><span class="line">RUN chown -R blue:blue &#x2F;var&#x2F;lib&#x2F;nginx</span><br><span class="line">RUN mkdir -p &#x2F;home&#x2F;blue&#x2F;my_log</span><br><span class="line"></span><br><span class="line">CMD [&quot;nginx&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>위 Dockerfile 은 Ubuntu 이미지를 이용하여 nginx를 설치하고 구동하는 간단한 예제이다. (실제 예가 아니며, Dockerfile 의 문법 자체에 대해서는 블로그 내 다른 포스팅을 참조하자.) 이 경우 Docker build 명령어를 이용하여 이미지를 생성할 경우 레이어 구조는 개략적으로 아래와 같다고 볼 수 있다. </p>
-<p><img src="/image/docker-image-structure-05.jpg" alt="docker-image-structure-05"></p>
-<p>ubuntu 파일 시스템에서 사용하는 주 디렉토리들을 위와 같이 표현하였다. 최 하단의 base image layer는 ubuntu:14.04의 파일 시스템을 구성하고 있으며, 그 위로 Dockerbuild 파일의 명령어 줄 단위로 레이어가 생기며 해당 레이어에서 실행하는 명령으로 인하여 변경되는 부분에 대해서 해당 레이어가 차이점 (diff or delta 값)을 보관하고 있다. 이러한 방식으로 변경된 내용들을 상위 레이어가 부분적으로 보유하고 있으며, 가장 마지막에 Container layer가 올라가고  그 뒤에 UnionFS 를 사용한다. UnionFS는 하나의 디렉토리에 서로 다른 파일 시스템을 마운트시켜주는 구조인데, 마운트의 특성 상 가장 마지막에 덮어진(mount) 레이어가 보이게 된다. 따라서 여러 개의 파일시스템이 적용되어 있는 디렉토리도 사용자에게는 하나의 파일 시스템처럼 보이는 뷰를 제공해준다. 위와 같은 방식으로 Docker image 가 구성된다고 보면 이해하기 쉽다.</p>
+            <h2 id="Kubernetes"><a href="#Kubernetes" class="headerlink" title="Kubernetes"></a>Kubernetes</h2><h3 id="Application-배포의-흐름"><a href="#Application-배포의-흐름" class="headerlink" title="Application 배포의 흐름"></a>Application 배포의 흐름</h3><p>전통적인 어플리케이션 구성 환경의 경우 물리 리소스인 하드웨어 위에 미들웨어로서 운영체제를 구축하고 해당 운영체제 위에서 소프트웨어를 배포하여 서비스를 제공하게 된다.<br>그러나 이러한 기존 방식에서는 수시로 변동되는 서비스 요청에 따라 네트워크, 스토리지 등의 하드웨어 자원을 효율적으로 사용하기가 어렵다.<br>이에 자원의 효율적 사용을 위하여 가상화 개념이 도입되었다.<br>인프라 제공자들은 이러한 가상 머신(Virtual Machine)을 사용하여 완전히 격리된 공간을 제공하였고, 이를 통하여 기존 방식의 자원사용의 비효율성을 해결할 수 있었다.<br>그리고 2013년 초에 도커 컨테이너 서비스가 등장하면서 컨테이너를 통한 배포가 활발해졌다.<br>컨테이너는 가상머신에 비하여 가볍다는 점을 이용하여 어플리케이션의 개발/배포를 더욱 용이하게 하였고, 인프라와의 종속성을 단절하여 on-premise 환경 이외에의 클라우드 환경에서도 사용할 수 있었다. 가상화 및 컨테이너 기술 자체에 대한 내용은 해당 주제를 참고하도록 한다.</p>
+<h3 id="Container-배포-방식의-한계"><a href="#Container-배포-방식의-한계" class="headerlink" title="Container 배포 방식의 한계"></a>Container 배포 방식의 한계</h3><p>그러나 배포 방식의 변화에 따라 등장하게 된 컨테이너 기술 역시 부족한 부분은 존재한다. 운영 환경에서의 안정성을 그 예로 들어보자.<br>BM 혹은 VM 위에 도커와 같은 컨테이너 엔진(플랫폼)을 구축한 후에 주요 어플리케이션을 컨테이너로 구동하여 서비스를 제공할 수 있다.<br>Web, was, db, Queue 등의 마이크로서비스화 되어진 여러 컨테이너가 유기적으로 연계하여 서비스를 제공하는 중에 특정 컨테이너가 예기치 못한 이유로 제거될 경우에는 당연하게도 서비스가 제대로 동작하지 않게 된다. 이러한 문제는 기존의 배포 방식에서도 마찬가지이다.<br>물론 컨테이너 엔진 자체에 옵션을 설정하여, 특정 컨테이너의 상태를 체크(health check)하고 정상 동작하지 않거나 제거되었을 경우 자동으로 컨테이너를 다시 생성하게 할 수 있다.<br>그렇다면 해당 BM/VM 자체에 문제가 발생한 경우는 어떨까? 컨테이너 엔진의 하드웨어 역할을 하는 BM/VM 에 장애가 발생한 경우에는 컨테이너의 재시작 옵션과 무관하게 서비스에도 장애가 발생하며 이는 관리자가 해당 BM/VM 을 재구동하여 컨테이너 엔진을 재시작 한 뒤에야 복구가 가능하다.<br>즉, 컨테이너만을 이용한 배포/운영 방식은 기존의 전통 어플리케이션 구성 방식에 비하여 빠른 빌드/배포/운영의 장점은 가지고 있으나<br>운영 중 장애복구 상황에 대해서는 기존의 방식과 (심지어 VM의 경우에도) 동일한 문제점을 안고 있는 것이다.</p>
+<h3 id="Container-Orchestration-Platform"><a href="#Container-Orchestration-Platform" class="headerlink" title="Container Orchestration Platform"></a>Container Orchestration Platform</h3><p>이에 기존 컨테이너 서비스의 운영 장애처리 뿐 아니라 컨테이너 레벨에서 연계 배포 등을 지원하기 위하여, 여러 개의 BM/VM 클러스터 위에서 컨테이너를 분산 관리해줄 수 있는 플랫폼을 사용하게 된다.<br>‘컨테이너 오케스트레이션 플랫폼’은 이러한 요구사항으로 등장하게 되었으며, 여기서 다루는 Kubernetes 이외에도 Docker swarm, Apache Mesos 등이 있다.<br>kubernetes 는 컨테이너에 대한 프레임워크 레벨에서 아래와 같은 기능들을 제공하여, 컨테이너의 운영 배포를 지원한다.</p>
+<ul>
+<li>네트워킹 : 서로 다른 컨테이너 간의 서비스 식별을 통하여 모듈간 연계성을 높이며, 컨테이너에 많은 트래픽이 유입되는 경우에 대하여 논리적 로드밸런서를 통하여 같은 목적의 여러 컨테이너에 트래픽을 분산 제어 할 수 있다.</li>
+<li>스토리지 : 컨테이너가 사용하는 스토리지를 제어하여 컨테이너가 여러 클라우드 공급자의 저장소나 로컬 저장소 등을 사용할 수 있도록 관리할 수 있다.</li>
+<li>장애복구 : 정상 동작하지 않는 컨테이너를 감지하여 제거하고 새로 구동하며, 특정 BM/VM 자체에 문제가 발생했을 경우 해당 장비에 위치한 컨테이너를 상태가 양호한 장비에 재구동하여 장애 발생 시간을 최소화 한다.</li>
+<li>보안관리 : kubernetes 플랫폼 자체적으로 보안 기능을 지원하여 암호, 토큰 등을 통한 중요 정보의 저장/관리 기능을 지원한다. 이를 통하여 중요 정보를 어플리케이션 레벨이 아닌 컨테이너 레벨에서 관리할 수 있다.</li>
+</ul>
+<h2 id="Kubernetes-구성요소"><a href="#Kubernetes-구성요소" class="headerlink" title="Kubernetes 구성요소"></a>Kubernetes 구성요소</h2><p>Kubernetes 플랫폼은 여러 대의 장비를 논리적인 클러스터로 묶는다. 클러스터의 구성이 되는 장비를 ‘노드’ 라고 지칭하며 노드가 구성하는 클러스터를 ‘kubernetes 클러스터’ 라고 한다.<br>이후의 포스팅에서는 kubernetes 라는 표현의 축약어인 k8s 를 표현을 사용하며, 클러스터의 성격을 강조하기 위하여 ‘k8s 플랫폼’ 뿐 아니라 ‘k8s 클러스터’의 표현도 병용한다.</p>
+<p>k8s 클러스터에 구성되는 컴포넌트는 ‘컨트롤 플레인 컴포넌트’와 ‘노드 컴포넌트’ 로 구성될 수 있다.</p>
+<h3 id="컨트롤-플레인-컴포넌트"><a href="#컨트롤-플레인-컴포넌트" class="headerlink" title="컨트롤 플레인 컴포넌트"></a>컨트롤 플레인 컴포넌트</h3><p>컨트롤 플레인 컴포넌트는 클러스터의 전반적인 중요 결정을 수행하고 클러스터에 구동되는 ‘Pods(이하 파드. 후술할 컨테이너의 집합)’를 생성/삭제/배치한다.<br>이 컴포넌트는 어떤 노드에도 구성될 수 있으나, 많은 경우 특정 노드에 중심적으로 설치되어 일명 ‘마스터 노드’ 로서의 역할을 수행한다.<br>이렇게 특정 노드를 마스터 노드로 지정하여 컨트롤 플레인 컴포넌트를 구동할 경우 마스터 노드가 아닌 일반 노드는, 워커 노드로 분류되어 표현된다.<br>이러한 마스터/워커 노드의 구분은 강제사항은 아니나 관리를 쉽게 해주며, 추후 클러스터 고가용성 구축을 위하여도 권장된다.</p>
+<ul>
+<li>kube-apiserver : kubernetes API 를 노출하는 컴포넌트로 노드의 kubelet 컴포넌트와 통신하여 노드 및 클러스터를 관리한다.</li>
+<li>kube-scheduler : 노드의 상태를 감지하여, 파드를 배치하는 역할을 수행한다.</li>
+<li>kube-controller-manager : 현재 노드 및 파드의 상태를 감지하여 노드의 장애를 감지하고 파드를 재배치하거나, 노드 위의 파드의 수를 지정된 수로 조정/유지한다.</li>
+<li>etcd : 고가용성 키-값 저장소로 k8s 클러스터 자체의 모든 데이터를 저장한다. </li>
+</ul>
+<h3 id="노드-컴포넌트"><a href="#노드-컴포넌트" class="headerlink" title="노드 컴포넌트"></a>노드 컴포넌트</h3><p>노드 컴포넌트는 파드를 유지시키는 역할을 담당한다. (마스터/워커 노드의 지정과는 별도로 어떤 경우에도) 모든 노드에 설치되어야 한다.</p>
+<ul>
+<li>kubelet : 각 노드에서 구동되는 주요 컴포넌트로, 컨트롤 플레인과 통신하여 컨테이너의 수명주기를 관리한다.</li>
+<li>kube-proxy : 클러스터 상의 노드 및 노드에서 구동되는 파드의 서비스간 연계를 담당한다. 네트워크 규칙도 관리하여 내/외부로 팟이 통신할 수 있도록 한다.</li>
+<li>CRI : Container Runtime Interface로, 노드 위에서의 컨테이너 실행을 담당한다. k8s 에서는 도커 이외에도 containerd, CRI-O 등을 지원한다.</li>
+</ul>
+<h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><ul>
+<li>Kubernetes 공식 문서 : <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/">https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/</a></li>
+<li>Orchestration 에 관한 RedHat 문서 : <a target="_blank" rel="noopener" href="https://www.redhat.com/ko/topics/containers/what-is-container-orchestration">https://www.redhat.com/ko/topics/containers/what-is-container-orchestration</a></li>
+</ul>
 
         </div>
         <footer class="article-footer">
@@ -238,7 +239,7 @@
 
 
 
-    <a data-url="http://bluefriday.github.io/2020/11/19/docker-image-structure/" data-id="ckhpstyzn0004gu8z8l5ra9hj" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://bluefriday.github.io/2020/11/19/kubernetes-overview/" data-id="ckhpw423s0000o15a1jed0sss" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -308,17 +309,16 @@
             "@type": "Person",
             "name": "Heechang Lee"
         },
-        "headline": "docker image structure",
-        "image": "http://bluefriday.github.io/image/docker-image-structure-01.jpg",
+        "headline": "kubernetes-overview",
+        "image": "http://bluefriday.github.io",
         "keywords": "",
         "genre": "",
-        "datePublished": "2020-11-19",
-        "dateCreated": "2020-11-19",
+        "datePublished": "2020-11-20",
+        "dateCreated": "2020-11-20",
         "dateModified": "2020-11-20",
-        "url": "http://bluefriday.github.io/2020/11/19/docker-image-structure/",
-        "description": "
-1. 도커 이미지 구조도커 이미지는 HostOS에서 컨테이너를 구동하기 위해 필요한 프로그램, 소스, 유틸리티 등의 모음이다. 이미지를 이용하여 컨테이너를 생성하게 되는데 이는 위의 그림처럼 자바에서의 ‘클래스’, ‘인스턴스’의 개념으로 이해하면 쉽다. 흔히 자바를 공부할 때 붕어빵과 붕어빵틀의 예를 많이 보게된다. 자바 클래스를 이용하여 자바 인스턴스를",
-        "wordCount": 709
+        "url": "http://bluefriday.github.io/2020/11/19/kubernetes-overview/",
+        "description": "KubernetesApplication 배포의 흐름전통적인 어플리케이션 구성 환경의 경우 물리 리소스인 하드웨어 위에 미들웨어로서 운영체제를 구축하고 해당 운영체제 위에서 소프트웨어를 배포하여 서비스를 제공하게 된다.그러나 이러한 기존 방식에서는 수시로 변동되는 서비스 요청에 따라 네트워크, 스토리지 등의 하드웨어 자원을 효율적으로 사용하기가 어렵다.이에 ",
+        "wordCount": 722
     }
 </script>
 
@@ -383,20 +383,10 @@
         
 <nav id="article-nav">
     
-        <a href="/2020/11/19/docker-registry-service/" id="article-nav-newer" class="article-nav-link-wrap">
-        <strong class="article-nav-caption">newer</strong>
-        <p class="article-nav-title">
-        
-            docker registry service
-        
-        </p>
-        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
-    </a>
     
-    
-        <a href="/2020/11/19/dockerfile-best-practice/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2020/11/19/Introduction-to-cloud-computing/" id="article-nav-older" class="article-nav-link-wrap">
         <strong class="article-nav-caption">older</strong>
-        <p class="article-nav-title">dockerfile best practice</p>
+        <p class="article-nav-title">Introduction to cloud computing</p>
         <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
         </a>
     
@@ -592,7 +582,7 @@
     var disqus_shortname = 'hexo-theme-hueman';
     
     
-    var disqus_url = 'http://bluefriday.github.io/2020/11/19/docker-image-structure/';
+    var disqus_url = 'http://bluefriday.github.io/2020/11/19/kubernetes-overview/';
     
     (function() {
     var dsq = document.createElement('script');
