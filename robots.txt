@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bluefriday.github.io/sitemap.xml
